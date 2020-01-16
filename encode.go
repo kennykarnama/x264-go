@@ -85,6 +85,7 @@ func NewEncoder(w io.Writer, opts *Options) (e *Encoder, err error) {
 	param.BVfrInput = 0
 	param.BRepeatHeaders = 1
 	param.BAnnexb = 1
+	param.Analyse.BPsnr = 1
 
 	param.ILogLevel = e.opts.LogLevel
 
@@ -133,7 +134,7 @@ func NewEncoder(w io.Writer, opts *Options) (e *Encoder, err error) {
 }
 
 // Encode encodes image.
-func (e *Encoder) Encode(im image.Image) (err error) {
+func (e *Encoder) Encode(im image.Image) (out x264c.Picture, err error) {
 	var picIn, picOut x264c.Picture
 
 	e.img.ToYCbCr(im)
@@ -172,6 +173,8 @@ func (e *Encoder) Encode(im image.Image) (err error) {
 			err = fmt.Errorf("x264: error writing payload, size=%d, n=%d", ret, n)
 		}
 	}
+
+	out = picOut
 
 	return
 }
